@@ -151,8 +151,8 @@ h1, h2, h3, p { margin: 0; }
   height: 36px; padding: 0 14px;
   display: inline-flex; align-items: center;
   background: transparent; color: var(--text);
-  border: 1px solid var(--field-line); border-radius: 4px;
-  font: inherit; font-size: 12px; font-weight: 500;
+  border: 1px solid var(--field-line); border-radius: 999px;
+  font: inherit; font-size: 12px; font-weight: 600;
   cursor: pointer;
 }
 .btn-outline.btn-sm { height: 36px; }
