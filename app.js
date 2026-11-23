@@ -536,7 +536,7 @@
     $("assetsUpdated").textContent = "Last Updated " + d.updated;
     $("assets").innerHTML =
       '<div class="metric-grid">' +
-        '<div class="metric">' +
+        '<div class="metric metric-activity">' +
           '<span class="metric-label">Rabbit Activity</span>' +
           '<div class="check-big">' + (d.caught ? '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>' : ICON_TRIANGLE) + "</div>" +
           '<span class="metric-foot">' + activityText + "</span>" +
@@ -758,37 +758,72 @@
   }
   // <<< END: function dateFilterComparator
 
+  // Fund names truncate with an ellipsis when the column is narrow.
+  function fundCell(p) {
+    var span = document.createElement("span");
+    span.className = "sm-fund-name";
+    span.textContent = p.value || "";
+    return span;
+  }
+
+  // Desktop minimums fit header and cell text. Compact (phone) minimums are smaller, see COMPACT_MIN_WIDTHS.
   var COLUMNS = [
     {
-      colId: "sev", headerName: "Severity", field: "sev", width: 150,
+      colId: "sev", headerName: "Severity", field: "sev", width: 120, minWidth: 110,
       cellRenderer: sevCell,
       comparator: function (a, b) { return SEV_RANK[a] - SEV_RANK[b]; },
     },
     {
-      colId: "fund", headerName: "Fund", field: "fund", flex: 1.2, minWidth: 180,
-      cellClass: "sm-cell-fund"
+      colId: "fund", headerName: "Fund", field: "fund", flex: 1.2, minWidth: 80,
+      cellClass: "sm-cell-fund", cellRenderer: fundCell
     },
+    { colId: "reason", headerName: "Reason", field: "reason", flex: 1, minWidth: 80 },
+    { colId: "expected", headerName: "Expected Value from/to", field: "expected", flex: 1.4, minWidth: 160 },
     {
-      colId: "reason", headerName: "Reason", field: "reason", flex: 1, minWidth: 120,
-    },
-    {
-      colId: "expected", headerName: "Expected Value from/to", field: "expected", flex: 1.4, minWidth: 170,
-    },
-    {
-      colId: "status", headerName: "Status", field: "status", width: 170,
+      colId: "status", headerName: "Status", field: "status", width: 150, minWidth: 140,
       cellRenderer: statusCell,
       comparator: function (a, b) { return STATUS_RANK[a] - STATUS_RANK[b]; },
     },
     {
-      colId: "created", headerName: "Date Created", field: "created", flex: 1.2, minWidth: 180,
+      colId: "created", headerName: "Date Created", field: "created", flex: 1.2, minWidth: 120,
       valueFormatter: function (p) { return p.value ? formatDateTime(p.value) : ""; },
       comparator: function (a, b) { return (a ? a.getTime() : 0) - (b ? b.getTime() : 0); },
     },
     {
-      colId: "actions", headerName: "Actions", field: "id", width: 150,
+      colId: "actions", headerName: "Actions", field: "id", width: 124, minWidth: 124,
       cellRenderer: actionCell, sortable: false, filter: false
     }
   ];
+
+  var COMPACT_MIN_WIDTHS = { sev: 76, fund: 40, status: 104, actions: 92 };
+  var HIDE_BELOW = [
+    { colIds: ["created", "expected"], width: 760 },
+    { colIds: ["reason"], width: 680 },
+  ];
+  var COMPACT_BELOW = 560;
+  var compactLayout = null;
+
+  // Column definitions for the current layout: compact minimums on narrow screens.
+  function columnDefsFor(compact) {
+    return COLUMNS.map(function (col) {
+      var min = compact ? COMPACT_MIN_WIDTHS[col.colId] : undefined;
+      return min ? Object.assign({}, col, { minWidth: min }) : col;
+    });
+  }
+
+  // Applies the layout for the grid's width: compact minimums, hidden columns, then fit.
+  function applyLayout(width) {
+    if (!grid || !width) return;
+    var compact = width < COMPACT_BELOW;
+    if (compactLayout !== compact) {
+      grid.setGridOption("columnDefs", columnDefsFor(compact));
+      compactLayout = compact;
+    }
+    HIDE_BELOW.forEach(function (rule) {
+      grid.setColumnsVisible(rule.colIds, width >= rule.width);
+    });
+    grid.sizeColumnsToFit();
+  }
 
   // >>> START: function sortValue
   function sortValue(row, colId) {
@@ -915,6 +950,11 @@
       theme: gridTheme(),
       onCellClicked: onGridCellClicked
     });
+    // Re-apply the layout whenever the grid's width changes (window resize, rotation).
+    if (window.ResizeObserver) {
+      new ResizeObserver(function () { applyLayout($("summaryGrid").clientWidth); }).observe($("summaryGrid"));
+    }
+    applyLayout($("summaryGrid").clientWidth);
   }
   // <<< END: function ensureGrid
 
@@ -973,7 +1013,7 @@
     });
     if (showSummary) {
       ensureGrid();
-      if (grid && grid.sizeColumnsToFit) grid.sizeColumnsToFit();
+      applyLayout($("summaryGrid").clientWidth);
     }
     window.scrollTo(0, 0);
   }
