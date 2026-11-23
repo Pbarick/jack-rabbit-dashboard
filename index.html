@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jack Rabbit Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- >>> START: App header (logo, fund and date box, Rabbit Datagrid, icons) -->
+  <header class="app-header">
+    <div class="header-row">
+      <a href="#dashboard" class="brand" aria-label="Jack Rabbit home">
+        <img src="rabbit-logo.svg" alt="Rabbit Run logo" class="brand-logo">
+        <span class="brand-name">Jack Rabbit</span>
+      </a>
+
+      <div class="header-controls">
+        <div class="fund-group">
+          <div class="filter-wrap">
+            <button type="button" class="filter-btn" id="filterBtn" data-action="toggle-filter" aria-haspopup="listbox" aria-expanded="false">
+              <span id="filterLabel">All Funds</span>
+              <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="filter-panel" id="filterPanel" hidden></div>
+          </div>
+
+          <span class="fund-divider" aria-hidden="true"></span>
+
+          <div class="date-wrap">
+            <button type="button" class="date-btn" id="dateBtn" data-action="toggle-date" aria-haspopup="dialog" aria-expanded="false">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+              <span id="dateLabel">16-Dec-2024</span>
+            </button>
+            <div class="datepicker" id="datepicker" role="dialog" aria-label="Choose date" hidden></div>
+          </div>
+        </div>
+
+        <a href="#summary" class="btn-primary btn-sm btn-link" data-nav="summary">Rabbit Datagrid</a>
+
+        <button type="button" class="icon-btn" aria-label="Insights">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2.5C11.6 8.2 15.8 12.4 21.5 13 15.8 13.6 11.6 17.8 11 23.5 10.4 17.8 6.2 13.6 .5 13 6.2 12.4 10.4 8.2 11 2.5Z"/><path d="M19.5 1.5c.2 1.3.6 1.7 1.9 1.9-1.3.2-1.7.6-1.9 1.9-.2-1.3-.6-1.7-1.9-1.9 1.3-.2 1.7-.6 1.9-1.9z"/></svg>
+        </button>
+        <button type="button" class="icon-btn" aria-label="Account">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="10" r="3"/><path d="M6.6 18.2c1.3-2.2 3.2-3.3 5.4-3.3s4.1 1.1 5.4 3.3"/></svg>
+        </button>
+        <button type="button" class="icon-btn has-badge" aria-label="Tasks, 12 open">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+          <span class="badge">12</span></button>
+        <button type="button" class="icon-btn" aria-label="Apps">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="17" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7.5" rx="1.5"/><rect x="13.5" y="13" width="7" height="7.5" rx="1.5"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+<!-- <<< END: App header -->
+
+  <main class="app-main">
+
+<!-- >>> START: Dashboard view (#view-dashboard) -->
+    <section id="view-dashboard" class="view" aria-label="Dashboard">
+
+      <div class="dashboard-grid">
+
+<!-- >>> START: Card - Rabbit Performance -->
+        <article class="card card-performance" id="card-performance" aria-labelledby="t-performance">
+          <header class="card-head">
+            <h2 id="t-performance">Rabbit Performance</h2>
+          </header>
+          <div class="card-body" id="performance"></div>
+        </article>
+<!-- <<< END: Card - Rabbit Performance -->
+
+<!-- >>> START: Card - Assets (tabs, metrics, Complete Stats) -->
+        <article class="card card-assets" id="card-assets" aria-labelledby="t-assets">
+          <div class="assets-main">
+            <header class="card-head card-head-assets">
+              <h2 id="t-assets">Assets</h2>
+              <span class="muted" id="assetsUpdated">Last Updated 12/20/24</span>
+              <div class="tab-row" role="tablist">
+                <button type="button" class="tab is-active" role="tab" aria-selected="true" data-action="asset-tab" data-index="0">RABBIT</button>
+                <button type="button" class="tab" role="tab" aria-selected="false" data-action="asset-tab" data-index="1">ITEM 2</button>
+                <button type="button" class="tab" role="tab" aria-selected="false" data-action="asset-tab" data-index="2">ITEM 3</button>
+              </div>
+            </header>
+            <div class="card-body" id="assets"></div>
+          </div>
+
+          <aside class="complete-panel" id="card-complete" aria-labelledby="t-complete">
+            <h2 id="t-complete">Complete STATS</h2>
+            <p class="muted" id="completeOf">6 of 88</p>
+            <div id="complete"></div>
+            <button type="button" class="btn-outline btn-sm" data-action="view-complete">View Complete</button>
+          </aside>
+        </article>
+<!-- <<< END: Card - Assets (tabs, metrics, Complete Stats) -->
+
+<!-- >>> START: Card - Trades (combo chart) -->
+        <article class="card card-trades" id="card-trades" aria-labelledby="t-trades">
+          <header class="card-head">
+            <h2 id="t-trades">Trades</h2>
+          </header>
+          <div class="card-body" id="trades"></div>
+        </article>
+<!-- <<< END: Card - Trades (combo chart) -->
+
+      </div>
+
+      <div class="bottom-grid">
+
+<!-- >>> START: Card - Your Reports (expandable rows) -->
+        <article class="card card-reports" id="card-reports" aria-labelledby="t-reports">
+          <header class="card-head">
+            <h2 id="t-reports">Your Reports</h2>
+          </header>
+          <div class="card-body" id="reports"></div>
+        </article>
+<!-- <<< END: Card - Your Reports (expandable rows) -->
+
+<!-- >>> START: Card - More for you (promo) -->
+        <article class="card promo" id="card-promo" aria-labelledby="t-promo">
+          <img src="rabbit-logo.svg" alt="" class="promo-watermark" aria-hidden="true">
+          <p class="eyebrow">More for you</p>
+          <h2 id="t-promo">JACK RABBIT Investments</h2>
+          <div class="promo-actions">
+            <a href="#" class="link-blue">Learn More</a>
+            <button type="button" class="btn-outline btn-sm" data-action="view-all-reports">View All Reports</button>
+          </div>
+        </article>
+<!-- <<< END: Card - More for you (promo) -->
+
+      </div>
+    </section>
+<!-- <<< END: Dashboard view -->
+
+<!-- >>> START: Summary view (#view-summary, AG Grid) -->
+    <section id="view-summary" class="view" aria-label="Summary" hidden>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="#dashboard">Home</a>
+        <span aria-hidden="true">&gt;</span>
+        <span>Summary</span>
+      </nav>
+
+      <div class="sm-top">
+        <div class="sm-account">
+          <div class="sm-acc-head">
+            <h2>Account Total</h2>
+            <svg class="icon sm-sliders" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+          </div>
+          <p class="sm-value">$7.65 <span>B</span></p>
+          <p class="sm-delta">&#8599; 2.5%</p>
+        </div>
+
+        <div class="sm-stepper">
+          <ol class="sm-steps" id="stepper"></ol>
+        </div>
+
+        <div class="sm-gauge">
+          <h2>Rabbit Gauge</h2>
+          <div id="gauge"></div>
+        </div>
+      </div>
+
+      <div class="sm-tabs-row">
+        <div class="sm-tabs" role="tablist">
+          <button type="button" class="sm-tab" role="tab" aria-selected="false">Rabbit Tab 1</button>
+          <button type="button" class="sm-tab is-active" role="tab" aria-selected="true">Rabbit Tab 1</button>
+        </div>
+        <label class="sm-switch">
+          <input type="checkbox" id="liveToggle" checked>
+          <span class="sm-switch-track" aria-hidden="true"><span class="sm-switch-knob"><svg class="sw-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><svg class="sw-tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></span>
+          <span id="liveLabel">On</span>
+        </label>
+      </div>
+
+      <div class="sm-filters" id="statusFilters" role="group" aria-label="Filter by stage"></div>
+
+      <div class="sm-grid">
+        <div id="summaryGrid" class="sm-grid-host"></div>
+        <div class="sm-foot muted" id="gridFoot"></div>
+      </div>
+    </section>
+<!-- <<< END: Summary view (#view-summary, AG Grid) -->
+
+  </main>
+
+<!-- >>> START: Scripts -->
+  <script src="vendor/ag-grid-community.min.js"></script>
+  <script src="app.js"></script>
+<!-- <<< END: Scripts -->
+</body>
+</html>
