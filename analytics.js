@@ -9,7 +9,7 @@
  * You can also add your home IP in GoatCounter under Settings, then Tracking, then Ignore IPs.
  */
 (function () {
-  var SITE_CODE = 'SITE_CODE';
+  var SITE_CODE = 'pbarick';
   if (SITE_CODE === 'SITE_CODE') return;
 
   if (isOptedOut()) return;
